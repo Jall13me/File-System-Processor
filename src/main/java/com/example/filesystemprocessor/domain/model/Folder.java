@@ -21,11 +21,6 @@ public class Folder implements FileSystemElement {
     }
 
     @Override
-    public long getSize(){
-        return 0;
-    }
-
-    @Override
     public boolean isDirectory(){
         return true;
     }
@@ -36,6 +31,9 @@ public class Folder implements FileSystemElement {
     }
 
     @Override
+    public String getName(){return name;}
+
+    @Override
     public String getContent(){
         return null;
     }
@@ -43,6 +41,16 @@ public class Folder implements FileSystemElement {
     @Override
     public FileType getFileType(){
         return null;
+    }
+
+    @Override
+    public long getSize(){
+        return children.stream().mapToLong(FileSystemElement::getSize).sum();
+    }
+
+    @Override
+    public String toString(){
+        return String.format("Folder{name='%s', children=%d}", name , children.size());
     }
 
 }
