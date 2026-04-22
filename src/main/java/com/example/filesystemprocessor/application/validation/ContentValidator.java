@@ -1,59 +1,36 @@
 package com.example.filesystemprocessor.application.validation;
 
 import com.example.filesystemprocessor.domain.model.File;
-import com.example.filesystemprocessor.domain.model.FileType;
-import com.example.filesystemprocessor.domain.result.ProcessError;
 import com.example.filesystemprocessor.domain.result.ValidationError;
 
-public class ContentValidator implements ValidationHandler {
+import java.util.Optional;
+import java.util.Set;
 
-    private ValidationHandler next;
+public class ContentValidator extends AbstractValidationHandler {
 
-    @Override
-    public ValidationHandler setNext(ValidationHandler next){
-        this.next = next;
-        return next;
+    private final Set<String> requiredFields;
+
+    public ContentValidator(Set<String>requiredFields){
+        this.requiredFields = requiredFields;
     }
 
     @Override
-    public ProcessError validate(File file){
+    public Optional<ValidationError> validate(File file){
         String content = file.getContent();
 
-        if (content == null || content.trim().isEmpty()){
-            return new ValidationError("content", "El contenido del archivo esta vacio");
+        if (content == null || content.isBlank()){
+            return Optional.of(new ValidationError("content", "El contenido del archivo esta vacio"));
         }
 
-        return switch (file.getFileType()){
-            case INVOICE -> validateInvoiceContent(content);
-            case CONTRACT -> validateContractContent(content);
-            case REPORT -> validateReportContent(content);
-        };
-
-    }
-
-    private ProcessError validateInvoiceContent(String content){
-        if (!content.contains("customerId") || !content.contains("amount")){
-            return new ValidationError("content", "La factura debe contener 'customerId' y 'amount'");
+        for (String field : requiredFields){
+            if (!content.contains(field)){
+                return Optional.of(new ValidationError("content",String.format("Campo obligatorio ausente: '%s'",field)
+                ));
+            }
         }
-        return null;
-    }
 
-    private ProcessError validateContractContent(String content){
-        if (!content.contains("clientName") || !content.contains("signed=true")){
-            return new ValidationError("content", "El contrato debe contar con 'clientName' y 'signed=true'");
-        }
-        return null;
-    }
+        return passToNext(file);
 
-    private ProcessError validateReportContent (String content){
-        long lineCount = content.lines().count();
-        if (lineCount < 3){
-            return new ValidationError("content", "El reporte debe tener al menos 3 filas");
-        }
-        return null;
     }
-
 
 }
-
-

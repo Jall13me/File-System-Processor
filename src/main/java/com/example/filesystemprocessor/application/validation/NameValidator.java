@@ -1,28 +1,17 @@
 package com.example.filesystemprocessor.application.validation;
-
 import com.example.filesystemprocessor.domain.model.File;
-import com.example.filesystemprocessor.domain.result.ProcessError;
 import com.example.filesystemprocessor.domain.result.ValidationError;
 
-public class NameValidator implements ValidationHandler{
+import java.util.Optional;
 
-    private ValidationHandler next;
-
-    @Override
-    public ValidationHandler setNext(ValidationHandler next){
-        this.next = next;
-        return next;
-    }
+public class NameValidator extends AbstractValidationHandler{
 
     @Override
-    public ProcessError validate(File file){
-        if (file.getName()==null || file.getName().trim().isEmpty()){
-            return new ValidationError("name", "El nombre del archivo no puede estar vacio");
+    public Optional<ValidationError> validate(File file){
+        if (file.getName() == null || file.getName().isBlank()){
+            return Optional.of(new ValidationError("name", "El nombre del archivo no puede estar vacio"));
         }
-
-        return next !=null ? next.validate(file) : null;
-
+        return passToNext(file);
     }
-
 
 }
