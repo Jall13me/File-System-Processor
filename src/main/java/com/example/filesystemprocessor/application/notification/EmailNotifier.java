@@ -1,14 +1,16 @@
 package com.example.filesystemprocessor.application.notification;
 
-public class EmailNotifier extends AbstractNotifier {
+import com.example.filesystemprocessor.domain.model.File;
+import org.springframework.stereotype.Component;
+
+@Component
+public class EmailNotifier implements Notifier {
 
     @Override
-    public NotifierType getType(){
-        return NotifierType.EMAIL;
+    public void notify(File file, String message) {
+        System.out.printf("[EMAIL] → '%s' | %s%n", file.getName(), message);
     }
 
     @Override
-    protected void doNotify(String formattedMessage){
-        System.out.println("[EMAIL]" + formattedMessage);
-    }
+    public NotifierType getType() { return NotifierType.EMAIL; }
 }

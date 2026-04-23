@@ -1,14 +1,16 @@
 package com.example.filesystemprocessor.application.notification;
 
-public class SlackNotifier extends AbstractNotifier {
+import com.example.filesystemprocessor.domain.model.File;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SlackNotifier implements Notifier {
 
     @Override
-    public NotifierType getType(){
-        return NotifierType.SLACK;
+    public void notify(File file, String message) {
+        System.out.printf("[SLACK] → '%s' | %s%n", file.getName(), message);
     }
 
     @Override
-    protected void doNotify(String formattedMessage){
-        System.out.println("[SLACK" + formattedMessage);
-    }
+    public NotifierType getType() { return NotifierType.SLACK; }
 }
