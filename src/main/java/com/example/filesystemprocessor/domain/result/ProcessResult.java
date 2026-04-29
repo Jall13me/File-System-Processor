@@ -1,13 +1,18 @@
 package com.example.filesystemprocessor.domain.result;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
 public class ProcessResult {
 
+    @Getter
     private int totalProcessed = 0;
+    @Getter
     private int successCount = 0;
+    @Getter
     private int failureCount = 0;
     private final List<ErrorDetail> errors = new ArrayList<>();
 
@@ -28,10 +33,6 @@ public class ProcessResult {
         this.failureCount += other.failureCount;
         this.errors.addAll(other.errors);
     }
-
-    public int getTotalProcessed(){return totalProcessed;}
-    public int getSuccessCount(){return successCount;}
-    public int getFailureCount(){return failureCount;}
 
     public List<ErrorDetail> getErrors() {
         return Collections.unmodifiableList(errors);
